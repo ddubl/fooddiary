@@ -1,0 +1,25 @@
+{
+  "name": "fooddiary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "airtableAcccess.js",
+  "dependencies": {
+    "airtable": "^0.5.8",
+    "esm": "^3.2.3",
+    "puppeteer": "^1.12.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-stage-1": "^7.0.0",
+    "@types/node": "^10.12.21"
+  },
+  "scripts": {
+    "start": "nodemon --exec babel-node --experimental-modules --inspect src/airtableAccess.mjs",
+    "build": "babel-node --experimental-modules src -d dist --source-maps",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
