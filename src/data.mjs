@@ -12,33 +12,34 @@ async function ingredientSkeleton() {
   const skeletonBuffer = await fs.readFile(skeletonPath);
 
   const skeleton = new Promise((resolve, reject) => {
-    const promiseResult = JSON.parse(skeletonBuffer.toString());
-    resolve(promiseResult);
+    () => { JSON.parse(skeletonBuffer.toString()) resolve()
   })
   return skeleton;
 }
 
 export async function* Ingredients(base = base) {
-  let ingredient = {};
+  let ingredient = new Promise((resolve, reject) => {
+    resolve({});
+  });
 
-  const gather = async (baseName = 'ingredients', filter = base.ingredients.filter) => {
+  async function* gather(baseName, filter) {
+    //filtering airtabledata for points with recipe non-null is in filter object -> handled by airtableAPI
     base(baseName).select(filter).eachPage(
       async function page(records) {
         records.forEach(record => {
-          filter.fields.map(
+          yield await filter.fields.map(
             value => !isEmpty(record.get(value)) && value !== 'Name'
               ? ingredient[`${value}`] = record.get(value)
               : ingredient.hasOwnProperty(`${value}`)
               ? delete ingredient[`${value}`]
               : value
           );
-          yield await ingredient
         })
       }
     )
   }
 
-  yield* await gather();
+  yield* await gather('ingredients', base.ingredients.filter);
 }
 
 console.log(Ingredients(base));
