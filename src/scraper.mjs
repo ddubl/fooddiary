@@ -10,8 +10,9 @@ import { default as puppeteer } from 'puppeteer';
 
 // constructs: meta-parts of a site and their uses.
 // html-table sql
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const sites = {
-  construct: (addedString, baseUrl, superPage = aquaCalc.class, type = aquaCalc.type) =>  {`${baseUrl}/${superPage}/${type}${addedString}`},
+  construct(addedString, baseUrl = sites.aquaCalc.baseUrl, superPage = sites.aquaCalc.class, type = sites.aquaCalc.weightToVolume.type) {`https://www.${baseUrl}/${superPage}/${type}${addedString}`},
   aquaCalc: {
     class: 'calculate',
     baseUrl: 'aqua-calc.com',
@@ -22,6 +23,7 @@ const sites = {
       input: 'input[id=Volume]',
       type: 'select[#Unit]',
       submit: 'input[type=submit, value=Calculate]',
+      value: 'table',
     }
   },
   myFitnessPal: {
@@ -34,52 +36,41 @@ const sites = {
 }
 
 export const scraper = {
-  async *gather(url = sites, data, ...option) {
-    //check valid url
+  async gather(ingredients, url = sites, data, ...option) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
     const partialUrl = url.aquaCalc.weightToVolume.partialUrl;
     const baseUrl = url.aquaCalc.baseUrl;
     const site = url.construct(partialUrl, baseUrl);
-    const page = await option['page'] || await Function.call(puppeteer.launch(), newPage);
+    console.log(url['construct']);
 
-    defineRegion = (options) => {
-      optionTable = {
-        variants: [['id','#'], ['class','$'], ['type']],
-        get() {
-          return region()
-        },
-        region(func, options = {variants}) {
+    async function search(item, parameter = sites.aquaCalc.weightToVolume, parentElement = sites.aquaCalc.weightToVolume.lowestCommonParent, ...rest) {
+      console.log('reached1');
+      await page.goto(site);
+      let lowestCommonParent = await page.$(parentElement)
 
-        }
-      }
-
-      input = async (item, parameter, parentElement, ...rest = sites) => {
-        let lowestCommonParent = parentElement || rest.aquaCalc.weightToVolume.lowestCommonParent;
-        let params = rest.aquaCalc.weightToVolume;
-
-        await lowestCommonParent.$(params.input)
-      }
-      // return input and outputRegions as LiveNodeLists
-
-      output = async () => {
-
-      }
+      return await lowestCommonParent.$(parameter.input)
+        .then(() => console.log('done'))
+        .then(inputElement => inputElement.focus())
+        .then(focusedElement => focusedElement.type(item))
+        .then(() => lowestCommonParent.$(parameter.type))
+        .then(() => lowestCommonParent.$(parameter.submit))
+        .then(submit => submit.click())
+        .then(() => page.$('table'))
+        .then(() => page.screenshot(path.resolve(__dirname, '../screenshots/', 'ananas.png')))
+        .catch(err  => console.error(err));
     }
     // return extracted info from LiveNodeLists
-    yield* [...gather(sites, ingredients)].map((value) => {
-
-    })
+    return search(ingredients);
   }
 }
-
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-(async (site, ...rest) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(`https://www.${site}`);
-  const inputElement = await page.$$('input');
-  await console.log(inputElement);
-  await browser.close();
-})(sites.aquaCalc.baseUrl);
+// (async function scrape(site) {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   await page.goto(site)
+//   await page.screenshot(path.resolve(__dirname, '../screenshots/anotherExample.png'))
+// })(sites.url('weight-to-volume', ))
+scraper.gather('ananas');
 
 
 // ingredients is iterator over ingredients to scrape: can be streamed
