@@ -11,9 +11,10 @@ async function ingredientSkeleton() {
   const skeletonPath = path.resolve(__dirname, `../data/${skeletonShape}`);
   const skeletonBuffer = await fs.readFile(skeletonPath);
 
-  const skeleton = new Promise((resolve, reject) => {
-    () => { JSON.parse(skeletonBuffer.toString()) resolve()
-  })
+  const skeleton = new Promise(
+    () => { JSON.parse(skeletonBuffer.toString()) }
+  )
+
   return skeleton;
 }
 
