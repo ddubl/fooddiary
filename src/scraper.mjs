@@ -42,10 +42,11 @@ export const scraper = {
     const site = url.construct(partialUrl, baseUrl);
 
     async function search(item, parameter = sites.aquaCalc.weightToVolume, parentElement = sites.aquaCalc.weightToVolume.lowestCommonParent, ...rest) {
-      return await new Promise((resolve, reject) => { page.goto(site).then(resolve(page)) })
-        .then(page => page.$(parentElement))
+      return await new Promise((resolve, reject) => {
+        page.goto(site).then(resolve(page))
+      }).then(page => page.$(parentElement))
         .then(lowestParent => lowestParent.$(parameter.input))
-        .then(inputElement => inputElement.focus())
+        .then(inputElement => { inputElement.focus(); return page })
         .then(focusElement => focusElement.type(item))
         .then(() => { page.$(parameter.type) })
         .then(() => { page.$(parameter.submit).click(); return page })
@@ -53,9 +54,14 @@ export const scraper = {
         .then(() => page.screenshot({path: path.resolve(__dirname, '../screenshots/', 'ananas.png')}))
         .catch(err  => console.error(err));
     }
-    // return extracted info from LiveNodeLists
     return search(ingredients);
   }
 }
+
+
+new Promise((resolve, reject) => {
+  // promise resolves to value when other promise resolves:
+  Promise.resolve('hello').then(resolve(async (v) => { await `${v} world` }))
+}).then(v => console.log(v))
 
 scraper.gather('ananas');
