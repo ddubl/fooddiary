@@ -42,9 +42,8 @@ export const scraper = {
     const site = url.construct(partialUrl, baseUrl);
 
     async function search(item, parameter = sites.aquaCalc.weightToVolume, parentElement = sites.aquaCalc.weightToVolume.lowestCommonParent, ...rest) {
-      return await new Promise((resolve, reject) => {
-        page.goto(site).then(resolve(page))
-      }).then(page => page.$(parentElement))
+      return await page.goto(site)
+        .then(page => page.$(parentElement))
         .then(lowestParent => lowestParent.$(parameter.input))
         .then(inputElement => { inputElement.focus(); return page })
         .then(focusElement => focusElement.type(item))
@@ -57,11 +56,13 @@ export const scraper = {
     return search(ingredients);
   }
 }
-
-
-new Promise((resolve, reject) => {
-  // promise resolves to value when other promise resolves:
-  Promise.resolve('hello').then(resolve(async (v) => { await `${v} world` }))
-}).then(v => console.log(v))
-
-scraper.gather('ananas');
+/**
+ * question is still, how do we invoke a member-function on a return value of an expression in dot-notation.
+ * Compliccation: do it without assigning additional variables.
+ * solution context 1:
+ * what ccomes to mind first is to cheat the assignment of variables and do it with closures and parameters, we lose the concise
+ * and the obviously serial invocation of following promise-objects and their resolve() function.
+ * 
+ * another idea:
+ * how does the invocation chain work with IIFE?
+ */
