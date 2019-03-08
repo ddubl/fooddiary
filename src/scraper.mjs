@@ -42,11 +42,11 @@ export const scraper = {
     const site = url.construct(partialUrl, baseUrl);
 
     async function search(item, parameter = sites.aquaCalc.weightToVolume, parentElement = sites.aquaCalc.weightToVolume.lowestCommonParent, ...rest) {
-      return await page.goto(site)
+      return await new Promise((async (resolve, reject) => { await page.goto(site); return await resolve(page); }))
         .then(page => page.$(parentElement))
-        .then(lowestParent => lowestParent.$(parameter.input))
-        .then(inputElement => { inputElement.focus(); return page })
-        .then(focusElement => focusElement.type(item))
+        .then(lowestParent => lowestParent.$(parameter.input)).catch(Error('Element not found'))
+        .then(inputElement => inputElement.focus())
+        .then(() => page.type(item))
         .then(() => { page.$(parameter.type) })
         .then(() => { page.$(parameter.submit).click(); return page })
         .then(() => page.$('table'))
@@ -66,3 +66,16 @@ export const scraper = {
  * another idea:
  * how does the invocation chain work with IIFE?
  */
+
+scraper.gather('ananas')
+
+/**
+ * other question: what happens to direct assignment of a lambda expression within a promise constructor?
+ */
+
+// diff between:
+//  we know that the executor is immediately executed upon Promise construcction.
+new Promise((resolve, reject) => {
+
+})
+// so we have something like: if then
