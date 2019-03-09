@@ -67,7 +67,7 @@ export const scraper = {
  * how does the invocation chain work with IIFE?
  */
 
-scraper.gather('ananas')
+// scraper.gather('ananas')
 
 /**
  * other question: what happens to direct assignment of a lambda expression within a promise constructor?
@@ -76,6 +76,67 @@ scraper.gather('ananas')
 // diff between:
 //  we know that the executor is immediately executed upon Promise construcction.
 new Promise((resolve, reject) => {
-
+  resolve((value) => { somefunctionbody.operatesOn(value) })
+  // executorresolves to the lambda function:
+  // return value is void, takes value ?: T | PromiseLike<T>
 })
-// so we have something like: if then
+
+// now we want to resolve this to a thenable. 
+new Promise(async (resolve, reject) => {
+  await resolve((value) => { somefunctionbody.operatesOn(value) })
+  // ATTENTION: Babel resolves functions somehow differently from the v8 engine?! IIFE
+  // executorresolves to the lambda function:
+  // return value is void, takes value ?: T | PromiseLike<T>
+})
+
+// using e lambda expression chains:
+x => y => argv[1].someExpression // does that invoke on the variable itself or the returned value?
+
+// Experiments with chained functions:
+let fn = x => y => z => console.log(z);
+fn('1')('2')('3')
+fn()()('3')
+console.log(fn())
+console.log(fn('1','2','3'))
+// what happens if we spread the arguments?
+let fn1 = (...x) => (...y) => console.log([...x,...y])
+fn1(1, 2)(3, 4)
+// what happens if:
+
+console.log('fn2: \b \b ')
+let fn2 = x => x => console.log(x)
+fn2(1)(2)
+fn2(1)()
+
+
+let ofn = (x) => { return (x = argv) => { return (x = argv) => { return console.log(x) }}}
+// following the resolve-chain, what should be possible, is that instead of dot-invoking over the returned value, we invoke the expression with a value? (terminology?)
+console.log('ofn:')
+ofn(1)
+
+// building to different resolver precedence chains?
+new Promise((resolve, reject) => resolve('hi'))
+.then(v => console.log(v.hasOwnProperty('then'), 'hoistedpromise'));
+
+// tc39 proposal: ..resolved value property accessor
+() => {returnValue[access]}
+
+let someObject = {
+  fn1() { return (() => {'fn3 resolved'})},
+  fn2() { return 'fn2 resolved' }
+}
+
+let o = someObject.fn1()()
+
+x => y => z
+function func() {
+  let namedFuncExpression = () => {console.log('invoked named fn expression')}
+  return () => console.log('hi?')
+}
+
+func()();
+
+((() => { return func; })())['namedFuncExpression']()
+// ((() => func)())?.namedFuncExpression();
+
+// implementing dispatch-table variations (as library)
