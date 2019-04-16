@@ -1,10 +1,21 @@
-import { scraper } from './scraper.mjs'
-import { buildSkeleton, Ingredient } from './data.mjs'
-import { default as fsWithCallbacks} from 'fs'
-import { base } from './airtableAccess.mjs'
+import { default as fsWithCallbacks } from 'fs'
+import { gather } from './data.mjs'
+import { base, ingredients } from './airtableAccess.mjs';
+import { pipe, memoize } from './utils.mjs'
 const fs = fsWithCallbacks.promises;
 
-ingredientList(airtableGet)
-  .then(ingredientList => scrapeFor(ingredientList))
-  .then(data => airtableSet(data))
-  .catch(err => Error(err))
+// rendering airtableobjects as general objects
+// enable pipeline operator
+
+// pipe(
+//   gather,
+//   async v => console.log(await v)
+// )(base, ingredients.filter);
+
+// TODO: article: nested asynchronous iterator chains
+// resolving iteration process as nested loops
+
+
+(
+  async v => console.log(await v)
+)(gather(base, ingredients.filter))

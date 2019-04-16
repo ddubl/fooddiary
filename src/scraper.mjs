@@ -4,12 +4,11 @@
  *    seed (extracted form data for one point)
  *    toExtractData
  */
-
 import { default as path } from 'path'
 import { default as puppeteer } from 'puppeteer';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const sites = {
+export const __dirname = path.dirname(new URL(import.meta.url).pathname)
+, sites = {
   construct(addedString, baseUrl = sites.aquaCalc.baseUrl, superPage = sites.aquaCalc.class, type = sites.aquaCalc.type) {return `https://www.${baseUrl}/${superPage}/${type}${addedString}`},
   aquaCalc: {
     class: 'calculate',
@@ -18,9 +17,9 @@ const sites = {
     weightToVolume: {
       partialUrl: 'weight-to-volume',
       lowestCommonParent: '#vwap',
-      input: 'input[id=Volume]',
+      input: 'input[id=search-for-field]',
       type: 'select[#Unit]',
-      submit: 'input[type=submit, value=Calculate]',
+      submit: 'input[type=submit][value=Calculate]',
       value: 'table',
     }
   },
@@ -32,27 +31,39 @@ const sites = {
     baseUrl: 'myfitnesspal.com'
   }
 }
+// procedure to extract data from sites.
+const procedure = () => {
+    gotoSite();
+    search();
+    constructDataObject();
+}
 
-export const scraper = {
-  async gather(ingredients, url = sites, data, ...option) {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    const partialUrl = url.aquaCalc.weightToVolume.partialUrl;
-    const baseUrl = url.aquaCalc.baseUrl;
-    const site = url.construct(partialUrl, baseUrl);
+function find(term, scraper) {
+  let baseNode = nodeTree ? nodeTree : window.$();
 
-    async function search(item, parameter = sites.aquaCalc.weightToVolume, parentElement = sites.aquaCalc.weightToVolume.lowestCommonParent, ...rest) {
-      return await new Promise((async (resolve, reject) => { await page.goto(site); return await resolve(page); }))
-        .then(page => page.$(parentElement))
-        .then(lowestParent => lowestParent.$(parameter.input)).catch(Error('Element not found'))
-        .then(inputElement => inputElement.focus())
-        .then(() => page.type(item))
-        .then(() => { page.$(parameter.type) })
-        .then(() => { page.$(parameter.submit).click(); return page })
-        .then(() => page.$('table'))
-        .then(() => page.screenshot({path: path.resolve(__dirname, '../screenshots/', 'ananas.png')}))
-        .catch(err  => console.error(err));
-    }
-    return search(ingredients);
-  }
+  // x : string, Map => Map(string)
+  return x; // whereby x is a functieon resolving to the searchBar, taking a searchTerm as
+}
+
+
+/**
+ * @usage function evocation should be done with the closure in mind, meaning that certain tffucntions on promises and in the scraper can ain
+ */
+async function scraperInit() {
+  const browser = await puppeteer.launch()
+  , page = await browser.newPage()
+  , partialUrl = url.aquaCalc.weightToVolume.partialUrl
+  , baseUrl = url.aquaCalc.baseUrl
+  , site = url.construct(partialUrl, baseUrl) 
+  return browser;
+};
+
+async function search(item, parameter, parentElement, ...rest) {
+  init();
+  return await new Promise((async (resolve, reject) => { await page.goto(site); return await resolve(page); }))
+  // abstract over search term/element
+    .then(async page => await page.$(parentElement))
+    .then(async lowestParent => { await lowestParent; return lowestParent.$(parameter.input) })
+    .then(async element => { await element.type(item); await element.press('Enter'); return await element; })
+    .catch(err  => console.error(err));
 }

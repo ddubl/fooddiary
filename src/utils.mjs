@@ -1,19 +1,3 @@
-/**
- * 
- * utils: replace fn call with result
- * @param fn 
- */
-
-export function memoize2(fn) {
-  const memoized = () => {
-    return Function.call(fn, [...fn.arguments])
-  }
-
-  return (fn.memoized) ?
-    fn.memoized :
-    fn => { fn.memoized = memoized(fn) }
-}
-
 export function memoize(fn) {
   return function () {
       var args = Array.prototype.slice.call(arguments),
@@ -30,6 +14,8 @@ export function memoize(fn) {
       fn.memoize[hash] = fn.apply(this, args);
   };
 }
+
+export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
 export function isEmpty(obj) {
   return obj == true ?
