@@ -1,61 +1,51 @@
-import { default as fsWithCallbacks } from 'fs'
-import { default as path } from 'path'
-import { memoize, isEmpty } from './utils.mjs'
+import { fs, __dirname, memoize, isEmpty } from './utils.mjs'
 import { base } from './airtableAccess.mjs'
-
-const fs = fsWithCallbacks.promises
-, __dirname = path.dirname(new URL(import.meta.url).pathname)
 
 /**
  * @param a {Object} : name, e, p, c, f, d
  */
 // @Factory
-async function Ingredient(...a) {
-
+export async function* Ingredients(...parameters) {
   // all inherited object from Ingredient are unique (ergo singletons)
-  const {name, rest} = a
-  , skeletonShape = 'scrapeData.json'
-  , skeletonPath = path.resolve(__dirname, `../data/${skeletonShape}`)
+  let Ingredient = (...params) => x => {
+    let map = 
+      { array = p => (Ingredient(p.shift()))
+      , string = p => ({name: p})
+      , object = ({name, p, c, f, k, d}) => ({name, p, c, f, k, d})
+      , undefined = p => TypeErr(p)
+      }
 
-  let Ingredient = await fs.readFile(skeletonPath)
-    .then(
-      v => JSON.parse(v.toString())
-    ).catch(
-      err => Error(err, 'returning most primitive state: {}'), {}
-    )
+    return params.reduce(map[typeof(params)](params), x)
+  }
 
   // TODO: memoization currently always returns new object, even if same name and other params are different
-  return memoize(
-    Object.assign(Object.create(Ingredient, name), 
-      { Name: name,
-        ...rest
-      }
+   yield Ingredient(parameters).forEach(
+    v => Object.assign(
+      { Name: name
+      , p
+      , c
+      , f
+      , k
+      , d
+      } = v
     )
   )
 }
 
 /** 
+ * @async
+ * @function gather
  * @signature (s, o) -> P(I(o))
  * @usage filter for points with existing recipe
- * @param baseName indicating baseName Value
- * @param filter type=object airtableAPI handled filtering of data
- * @returns [Ingredient] 
+ * @param {String} baseName - base title
+ * @param {?Object.<Filter>} filter - type=object airtableAPI handled filtering of data
+ * @returns {?Array.<Ingredient>} 
  */
 export async function gather(baseName, filter) {
-
-  base(baseName).select(filter).eachPage(
+  return await base(baseName).select(filter).eachPage(
     function page(records) {
-      records.forEach(record => filter.fields.map(
-        Ingredient(
-        value => !isEmpty(record.get(value)) && value !== 'Name'
-          ? ingredient[`${value}`] = record.get(value)
-          : ingredient.hasOwnProperty(`${value}`)
-          ? delete ingredient[`${value}`]
-          : value
-        )
-      )
+      (record => Ingredients(record))(records.fields)
     }
   )
-
-  return ingredient;
+  .catch(err => Error(err))
 }
