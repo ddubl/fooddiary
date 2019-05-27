@@ -4,7 +4,6 @@ import { base } from './airtableAccess.mjs'
 /**
  * @param a {Object} : name, e, p, c, f, d
  */
-// @Factory
 export async function* Ingredients(...parameters) {
   // all inherited object from Ingredient are unique (ergo singletons)
   let Ingredient = (...params) => x => {
@@ -15,11 +14,10 @@ export async function* Ingredients(...parameters) {
       , undefined = p => TypeErr(p)
       }
 
-    return params.reduce(map[typeof(params)](params), x)
+    return params.reduce(p => map[typeof(p)](params), x)
   }
 
-  // TODO: memoization currently always returns new object, even if same name and other params are different
-   yield Ingredient(parameters).forEach(
+   yield Ingredient(parameters).map(
     v => Object.assign(
       { Name: name
       , p
@@ -38,7 +36,7 @@ export async function* Ingredients(...parameters) {
  * @signature (s, o) -> P(I(o))
  * @usage filter for points with existing recipe
  * @param {String} baseName - base title
- * @param {?Object.<Filter>} filter - type=object airtableAPI handled filtering of data
+ * @param {<Filter>} filter - type=object airtableAPI handled filtering of data
  * @returns {?Array.<Ingredient>} 
  */
 export async function gather(baseName, filter) {

@@ -20,20 +20,13 @@ export function memoize(fn) {
   };
 }
 
-// pipeAsFirstArg
-export const pipe = (...fns) => x => fns.reduce((v, f) => f(v, ...this.arguments), x);
+/**
+ * pipeAsFirstArg
+ */
+export const pipeFirst = (...fns) => x => fns.reduce((v, f) => f(v, ...arguments), x);
 
 export function isEmpty(obj) {
   return obj == true
   ? false
   : true
 }
-
-/**
- * writing dispatch function decorator:
- * evaluates expression in decorator -> invokes functions with 
- * creating new 
- */
-// function dispatch(options, fn) {
-//   return fn.getOwnPropertySymbols() === Symbol.for('dispatch') ? fn : decorate(fn)
-// }
