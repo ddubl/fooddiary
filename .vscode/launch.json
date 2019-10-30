@@ -7,18 +7,18 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "debug current js",
+      "name": "run current js",
       "program": "${file}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
-      "runtimeArgs": ["--nolazy", "--experimental-modules"]
+      "runtimeArgs": ["experimental-modules"]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "run current js",
-      "program": "${file}",
+      "name": "run app",
+      "program": "${workspaceFolder}/src/app.mjs",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
-      "runtimeArgs": ["--nolazy", "experimental-modules"]
+      "runtimeArgs": ["experimental-modules"]
     }
   ]
 }

@@ -5,7 +5,7 @@ import { base } from './airtableAccess.mjs'
  * @param a {Object} : name, e, p, c, f, d
  */
 export async function* Ingredients(...parameters) {
-  // all inherited object from Ingredient are unique (ergo singletons)
+  // all inherited Ingredients => Singletons
   let Ingredient = (...params) => x => {
     let map = 
       { array = p => (Ingredient(p.shift()))
@@ -13,11 +13,10 @@ export async function* Ingredients(...parameters) {
       , object = ({name, p, c, f, k, d}) => ({name, p, c, f, k, d})
       , undefined = p => TypeErr(p)
       }
-
     return params.reduce(p => map[typeof(p)](params), x)
   }
 
-   yield Ingredient(parameters).map(
+  yield Ingredient(parameters).map(
     v => Object.assign(
       { Name: name
       , p
@@ -39,6 +38,7 @@ export async function* Ingredients(...parameters) {
  * @param {<Filter>} filter - type=object airtableAPI handled filtering of data
  * @returns {?Array.<Ingredient>} 
  */
+// separate gather-function with bases
 export async function gather(baseName, filter) {
   return await base(baseName).select(filter).eachPage(
     function page(records) {
@@ -47,3 +47,5 @@ export async function gather(baseName, filter) {
   )
   .catch(err => Error(err))
 }
+
+export async function toFile(data)

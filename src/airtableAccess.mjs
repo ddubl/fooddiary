@@ -1,3 +1,4 @@
+// !! enterable through user-input
 // generate a promise containing a data object per matching ingredient-record
 import Airtable from 'airtable'
 import { get } from 'https';

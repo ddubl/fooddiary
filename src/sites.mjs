@@ -5,6 +5,7 @@ export const sites = {
     type: 'food-',
     weightToVolume: {
       partialUrl: 'weight-to-volume',
+      //TODO: fuzzy matching {currentType ; matchingType} {}
       lowestCommonParent: '#vwap',
       input: 'input[id=search-for-field]',
       type: 'select[#Unit]',

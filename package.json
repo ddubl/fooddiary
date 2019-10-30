@@ -4,16 +4,16 @@
   "description": "",
   "main": "airtableAcccess.js",
   "dependencies": {
-    "airtable": "^0.5.8",
-    "esm": "^3.2.3",
-    "puppeteer": "^1.12.1"
+    "airtable": "^0.5.10",
+    "esm": "^3.2.25",
+    "puppeteer": "^1.20.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/node": "^7.2.2",
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
     "@babel/preset-stage-1": "^7.0.0",
-    "@types/node": "^10.12.21"
+    "@types/node": "^10.17.0"
   },
   "scripts": {
     "start": "nodemon --exec babel-node --experimental-modules --inspect src/airtableAccess.mjs",

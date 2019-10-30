@@ -34,6 +34,7 @@ let fieldFactory = (page, elementHandle) => {
    */
   let enterable = field => {
   // surroundings should ideally only check upwardly-cascading elements for attached handlers
+    let properties = {},
     return v => (field => searchHandler(field) || TypeError('parameter isn\'t a &Elementhandle'))
   }
 
