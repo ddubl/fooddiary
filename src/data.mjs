@@ -39,6 +39,12 @@ export async function* Ingredients(...parameters) {
  * @returns {?Array.<Ingredient>} 
  */
 // separate gather-function with bases
+  // filter function that evaluates to filter object.
+  // basically factory function?
+let filter = () => {
+
+}
+
 export async function gather(baseName, filter) {
   return await base(baseName).select(filter).eachPage(
     function page(records) {
