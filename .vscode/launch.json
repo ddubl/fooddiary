@@ -9,16 +9,16 @@
       "request": "launch",
       "name": "run current js",
       "program": "${file}",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
-      "runtimeArgs": ["experimental-modules"]
+      "args": ["--experimental-modules"],
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "run app",
       "program": "${workspaceFolder}/src/app.mjs",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node",
-      "runtimeArgs": ["experimental-modules"]
+      "args": ["--experimental-modules"],
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/babel-node"
     }
   ]
 }
