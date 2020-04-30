@@ -5,9 +5,9 @@ import { base } from './airtableAccess.mjs'
  * @param a {Object} : name, e, p, c, f, d
  */
 export async function* Ingredients(...parameters) {
-  // all inherited Ingredients => Singletons
+// all inherited Ingredients => Singletons
   let Ingredient = (...params) => x => {
-    let map = 
+    let map =
       { array = p => (Ingredient(p.shift()))
       , string = p => ({name: p})
       , object = ({name, p, c, f, k, d}) => ({name, p, c, f, k, d})
@@ -29,14 +29,14 @@ export async function* Ingredients(...parameters) {
   )
 }
 
-/** 
+/**
  * @async
  * @function gather
  * @signature (s, o) -> P(I(o))
  * @usage filter for points with existing recipe
  * @param {String} baseName - base title
  * @param {<Filter>} filter - type=object airtableAPI handled filtering of data
- * @returns {?Array.<Ingredient>} 
+ * @returns {?Array.<Ingredient>}
  */
 // separate gather-function with bases
   // filter function that evaluates to filter object.

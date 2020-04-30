@@ -6,8 +6,10 @@
   "type": "commonjs",
   "dependencies": {
     "airtable": "^0.7.2",
+    "core-util-is": "^1.0.2",
     "esm": "^3.2.25",
-    "puppeteer": "^2.0.0"
+    "puppeteer": "^2.0.0",
+    "webpack-dev-server": "^3.10.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",

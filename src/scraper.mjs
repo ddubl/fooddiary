@@ -14,7 +14,7 @@ import { default as path } from 'path'
 import { default as puppeteer } from 'puppeteer';
 
 /**
- * 
+ *
  * @param elementHandle instanceOf ElementHandle
  * @param page
  */
@@ -23,14 +23,14 @@ let fieldFactory = (page, elementHandle) => {
    * @param {(Array.<NodeList>|Array.<LiveNodeList>|Array.<ElementHandle>)} field
    * @return {PromiseLike<Object>}
    */
-  let searchHandler = field => { 
+  let searchHandler = field => {
     // check elementhandle -> goto ParentElement -> 1)
     field.hasOwnProperty('form')
   }
 
   /**
    * pressing enter with current field selected prompts form send or appropriate functionality.
-   * @param field 
+   * @param field
    */
   let enterable = field => {
   // surroundings should ideally only check upwardly-cascading elements for attached handlers
@@ -39,8 +39,8 @@ let fieldFactory = (page, elementHandle) => {
   }
 
   /**
-   * 
-   * @param page 
+   *
+   * @param page
    */
   const field = async (page) => {
     // serving as core to ml
@@ -89,8 +89,8 @@ export async function browse(site) {
 // @dispatch(selector, field(search, result))
 /**
  * @type {Object} Page
- * @param {NodeList | } page 
- * @param param1 
+ * @param {NodeList | } page
+ * @param param1
  */
 export async function select(page, {field}) {
   const Selector = (...field) => x => {
@@ -121,5 +121,5 @@ export async function testSite(site) {
 }
 
 export async function dispatcher(obj) {
-  
+
 }
